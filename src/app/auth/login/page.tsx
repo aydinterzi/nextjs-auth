@@ -1,4 +1,3 @@
-// app/auth/login/page.tsx
 "use client";
 
 import { loginAction } from "@/lib/actions/authActions";

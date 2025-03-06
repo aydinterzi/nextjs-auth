@@ -26,17 +26,14 @@ export async function signupAction(formData: FormData) {
     throw new Error("Kullanıcı zaten mevcut");
   }
 
-  // Parolayı hash’le
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Yeni kullanıcı oluştur
   await db.insert(users).values({
     username,
     email,
     password: hashedPassword,
   });
 
-  // JWT token oluştur ve HTTP-only cookie’ye yaz
   const token = jwt.sign({ email }, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
   });
@@ -54,7 +51,6 @@ export async function loginAction(formData: FormData) {
     throw new Error(JSON.stringify(parsed.error.flatten()));
   }
 
-  // Kullanıcıyı veritabanında ara
   const usersFound = await db
     .select()
     .from(users)
@@ -64,13 +60,11 @@ export async function loginAction(formData: FormData) {
   }
 
   const user = usersFound[0];
-  // Şifre kontrolü
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
     throw new Error("Geçersiz kimlik bilgileri");
   }
 
-  // JWT token oluştur ve cookie’ye yaz
   const token = jwt.sign(
     { id: user.id, email: user.email },
     process.env.JWT_SECRET as string,

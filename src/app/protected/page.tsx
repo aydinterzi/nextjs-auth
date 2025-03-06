@@ -1,4 +1,3 @@
-// app/protected/page.tsx
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/actions/authActions";
 
